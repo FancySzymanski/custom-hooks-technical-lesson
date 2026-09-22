@@ -1,27 +1,11 @@
-import React, { useState, useEffect } from "react";
+import useFetchData from "../hooks/useFetchData";
 
 function Users() {
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { data, loading, error, refetch} = useFetchData(
+  "https://jsonplaceholder.typicode.com/users"
+  )
 
-  useEffect(() => {
-    fetch("https://jsonplaceholder.typicode.com/users")
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error("Failed to fetch users");
-        }
-        return res.json();
-      })
-      .then((data) => {
-        setUsers(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        setError(err.message);
-        setLoading(false);
-      });
-  }, []);
+ 
 
   if (loading) return <p className="loading">Loading users...</p>;
   if (error) return <p className="error">Error: {error}</p>;
@@ -29,8 +13,9 @@ function Users() {
   return (
     <div className="container">
       <h2>Users</h2>
+      <bautton onClick={refetch}>Refresh Users</bautton>
       <ul>
-        {users.map((user) => (
+        {data.map((user) => (
           <li key={user.id}>{user.name}</li>
         ))}
       </ul>
